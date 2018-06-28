@@ -60,6 +60,47 @@ xhr.onload = () => {
 xhr.send();
 ```
 
+##### Browser (file opened from local file system)
+
+This example is using TypeScript and ES6 syntax.
+
+```ts
+
+import * as fileType from 'file-type';
+
+
+const HEADER_CHUNK_LENGTH = 4100;
+
+
+// "file" below is a native "File" API class
+// obtained from input[type="file"] or via Drag&Drop
+
+const chunk = await readFileHeaderChuck(file);
+
+fileType(chunk);
+//=> {ext: 'png', mime: 'image/png'}
+
+
+function readFileHeaderChuck(file: File): Promise<Uint8Array> {
+
+  const reader = new FileReader();
+
+  return new Promise((resolve, reject) => {
+
+    reader.addEventListener('load', () => {
+      const arrayBuffer = reader.result;
+      resolve(new Uint8Array(arrayBuffer));
+    });
+
+    reader.addEventListener('error', reject);
+
+    reader.readAsArrayBuffer(file.slice(0, HEADER_CHUNK_LENGTH));
+
+  });
+
+}
+```
+
 
 ## API
 
